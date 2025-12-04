@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Container from '../components/Container.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import AnimatedSection from '../components/AnimatedSection';
+import { getAllServices } from '@/lib/sanityClient';
+
+const services = await getAllServices();
+---
+
+<Layout
+  title="Our Services - Professional Solutions"
+  description="Explore our comprehensive range of professional services designed to help your business succeed."
+>
+  <Navbar />
+
+  <!-- Page Header -->
+  <section class="py-20 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 text-white">
+    <Container>
+      <AnimatedSection client:load>
+        <div class="text-center max-w-3xl mx-auto">
+          <h1 class="text-5xl font-bold mb-6">Our Services</h1>
+          <p class="text-xl text-primary-100">
+            Comprehensive solutions tailored to your business needs
+          </p>
+        </div>
+      </AnimatedSection>
+    </Container>
+  </section>
+
+  <!-- Services Grid -->
+  <section class="py-20 bg-neutral-50">
+    <Container>
+      {services && services.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map((service: any, index: number) => (
+            <AnimatedSection client:load delay={index * 0.1}>
+              <ServiceCard
+                title={service.title}
+                description={service.description}
+                slug={service.slug}
+                image={service.image}
+                icon={service.icon}
+              />
+            </AnimatedSection>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-12">
+          <p class="text-xl text-neutral-600">No services available at the moment.</p>
+        </div>
+      )}
+    </Container>
+  </section>
+
+  <Footer />
+</Layout>

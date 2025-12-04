@@ -1,0 +1,50 @@
+---
+import { urlFor } from '@/lib/sanityClient';
+import Button from './Button.astro';
+
+interface Props {
+  headline: string;
+  subheadline?: string;
+  backgroundImage?: any;
+  ctaText?: string;
+  ctaLink?: string;
+}
+
+const { headline, subheadline, backgroundImage, ctaText, ctaLink } = Astro.props;
+
+const bgImageUrl = backgroundImage ? urlFor(backgroundImage).width(1920).url() : null;
+---
+
+<section class="relative h-[600px] md:h-[700px] flex items-center justify-center overflow-hidden">
+  <!-- Background Image -->
+  {bgImageUrl && (
+    <div
+      class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+      style={`background-image: url(${bgImageUrl})`}
+    >
+      <div class="absolute inset-0 bg-gradient-to-r from-neutral-900/80 to-neutral-900/40"></div>
+    </div>
+  )}
+  {!bgImageUrl && (
+    <div class="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-500"></div>
+  )}
+
+  <!-- Content -->
+  <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+    <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in-up">
+      {headline}
+    </h1>
+    {subheadline && (
+      <p class="text-xl md:text-2xl mb-8 text-neutral-200 animate-fade-in-up" style="animation-delay: 0.2s;">
+        {subheadline}
+      </p>
+    )}
+    {ctaText && ctaLink && (
+      <div class="animate-fade-in-up" style="animation-delay: 0.4s;">
+        <Button href={ctaLink} variant="primary" class="text-lg">
+          {ctaText}
+        </Button>
+      </div>
+    )}
+  </div>
+</section>

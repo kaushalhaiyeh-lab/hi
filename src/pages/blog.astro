@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Container from '../components/Container.astro';
+import BlogCard from '../components/BlogCard.astro';
+import AnimatedSection from '../components/AnimatedSection';
+import { getAllBlogPosts } from '@/lib/sanityClient';
+
+const blogPosts = await getAllBlogPosts();
+---
+
+<Layout
+  title="Blog - Latest News and Insights"
+  description="Stay updated with our latest articles, insights, and industry news."
+>
+  <Navbar />
+
+  <!-- Page Header -->
+  <section class="py-20 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 text-white">
+    <Container>
+      <AnimatedSection client:load>
+        <div class="text-center max-w-3xl mx-auto">
+          <h1 class="text-5xl font-bold mb-6">Our Blog</h1>
+          <p class="text-xl text-primary-100">
+            Insights, tips, and stories from our team
+          </p>
+        </div>
+      </AnimatedSection>
+    </Container>
+  </section>
+
+  <!-- Blog Posts Grid -->
+  <section class="py-20 bg-neutral-50">
+    <Container>
+      {blogPosts && blogPosts.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {blogPosts.map((post: any, index: number) => (
+            <AnimatedSection client:load delay={index * 0.1}>
+              <BlogCard
+                title={post.title}
+                slug={post.slug}
+                excerpt={post.excerpt}
+                mainImage={post.mainImage}
+                publishedAt={post.publishedAt}
+                author={post.author}
+              />
+            </AnimatedSection>
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-12">
+          <p class="text-xl text-neutral-600">No blog posts available yet. Check back soon!</p>
+        </div>
+      )}
+    </Container>
+  </section>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Container from '../components/Container.astro';
+import TeamMemberCard from '../components/TeamMemberCard.astro';
+import AnimatedSection from '../components/AnimatedSection';
+import { getSiteSettings, getAllTeamMembers } from '@/lib/sanityClient';
+
+const settings = await getSiteSettings();
+const teamMembers = await getAllTeamMembers();
+---
+
+<Layout
+  title="About Us - Our Story and Team"
+  description="Learn about our company mission, values, and meet the talented team behind our success."
+>
+  <Navbar />
+
+  <!-- Page Header -->
+  <section class="py-20 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 text-white">
+    <Container>
+      <AnimatedSection client:load>
+        <div class="text-center max-w-3xl mx-auto">
+          <h1 class="text-5xl font-bold mb-6">About Us</h1>
+          <p class="text-xl text-primary-100">
+            Discover our story, mission, and the people who make it all possible
+          </p>
+        </div>
+      </AnimatedSection>
+    </Container>
+  </section>
+
+  <!-- Mission Section -->
+  {settings?.aboutMission && (
+    <section class="py-20 bg-white">
+      <Container>
+        <AnimatedSection client:load>
+          <div class="max-w-4xl mx-auto">
+            <h2 class="text-4xl font-bold text-neutral-900 mb-6 text-center">Our Mission</h2>
+            <p class="text-lg text-neutral-700 leading-relaxed whitespace-pre-line">
+              {settings.aboutMission}
+            </p>
+          </div>
+        </AnimatedSection>
+      </Container>
+    </section>
+  )}
+
+  <!-- Team Section -->
+  {teamMembers && teamMembers.length > 0 && (
+    <section class="py-20 bg-neutral-50">
+      <Container>
+        <AnimatedSection client:load>
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-neutral-900 mb-4">Meet Our Team</h2>
+            <p class="text-xl text-neutral-600 max-w-2xl mx-auto">
+              The talented individuals who drive our success
+            </p>
+          </div>
+        </AnimatedSection>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {teamMembers.map((member: any, index: number) => (
+            <AnimatedSection client:load delay={index * 0.1}>
+              <TeamMemberCard
+                name={member.name}
+                role={member.role}
+                bio={member.bio}
+                image={member.image}
+              />
+            </AnimatedSection>
+          ))}
+        </div>
+      </Container>
+    </section>
+  )}
+
+  <Footer />
+</Layout>

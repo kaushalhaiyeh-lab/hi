@@ -1,0 +1,121 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import Container from '../../components/Container.astro';
+import Button from '../../components/Button.astro';
+import AnimatedSection from '../../components/AnimatedSection';
+import { PortableTextRenderer } from '../../lib/portableTextComponents';
+import { getAllServices, getServiceBySlug, urlFor } from '@/lib/sanityClient';
+
+export async function getStaticPaths() {
+  const services = await getAllServices();
+  
+  return services.map((service: any) => ({
+    params: { slug: service.slug.current },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const imageUrl = service.image ? urlFor(service.image).width(1200).height(600).url() : null;
+---
+
+<Layout
+  title={`${service.title} - Our Services`}
+  description={service.description}
+  image={imageUrl}
+>
+  <Navbar />
+
+  <!-- Service Header -->
+  <section class="py-20 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 text-white">
+    <Container>
+      <AnimatedSection client:load>
+        <div class="max-w-4xl mx-auto text-center">
+          <h1 class="text-5xl font-bold mb-6">{service.title}</h1>
+          <p class="text-xl text-primary-100">
+            {service.description}
+          </p>
+        </div>
+      </AnimatedSection>
+    </Container>
+  </section>
+
+  <!-- Service Image -->
+  {imageUrl && (
+    <section class="py-0">
+      <Container>
+        <AnimatedSection client:load>
+          <div class="relative h-96 rounded-2xl overflow-hidden shadow-2xl -mt-12">
+            <img
+              src={imageUrl}
+              alt={service.title}
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </AnimatedSection>
+      </Container>
+    </section>
+  )}
+
+  <!-- Service Details -->
+  <section class="py-20 bg-white">
+    <Container>
+      <div class="max-w-4xl mx-auto">
+        {/* Detailed Description */}
+        {service.detailedDescription && service.detailedDescription.length > 0 && (
+          <AnimatedSection client:load>
+            <div class="prose prose-lg max-w-none mb-12">
+              <PortableTextRenderer value={service.detailedDescription} client:load />
+            </div>
+          </AnimatedSection>
+        )}
+
+        {/* Features List */}
+        {service.features && service.features.length > 0 && (
+          <AnimatedSection client:load delay={0.2}>
+            <div class="bg-neutral-50 rounded-2xl p-8">
+              <h2 class="text-3xl font-bold text-neutral-900 mb-6">Key Features</h2>
+              <ul class="space-y-4">
+                {service.features.map((feature: string) => (
+                  <li class="flex items-start">
+                    <svg
+                      class="w-6 h-6 text-primary-600 mr-3 mt-1 flex-shrink-0"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-lg text-neutral-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </AnimatedSection>
+        )}
+
+        {/* CTA */}
+        <AnimatedSection client:load delay={0.4}>
+          <div class="mt-12 text-center">
+            <h3 class="text-2xl font-bold text-neutral-900 mb-4">
+              Interested in this service?
+            </h3>
+            <p class="text-neutral-600 mb-6">
+              Contact us today to learn more and get started
+            </p>
+            <Button href="/contact" variant="primary">
+              Get in Touch
+            </Button>
+          </div>
+        </AnimatedSection>
+      </div>
+    </Container>
+  </section>
+
+  <Footer />
+</Layout>

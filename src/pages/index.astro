@@ -1,11 +1,109 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import Container from '../components/Container.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import TestimonialCarousel from '../components/TestimonialCarousel';
+import Button from '../components/Button.astro';
+import AnimatedSection from '../components/AnimatedSection';
+import { getSiteSettings, getFeaturedServices, getAllTestimonials } from '@/lib/sanityClient';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const settings = await getSiteSettings();
+const featuredServices = await getFeaturedServices(3);
+const testimonials = await getAllTestimonials();
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="Home - Professional Business Services"
+  description="Transform your business with our professional services and expert solutions."
+>
+  <Navbar />
+  
+  <!-- Hero Section -->
+  {settings?.heroSection && (
+    <Hero
+      headline={settings.heroSection.headline}
+      subheadline={settings.heroSection.subheadline}
+      backgroundImage={settings.heroSection.backgroundImage}
+      ctaText={settings.heroSection.ctaText || 'Get Started'}
+      ctaLink={settings.heroSection.ctaLink || '/contact'}
+    />
+  )}
+
+  <!-- Featured Services Section -->
+  {featuredServices && featuredServices.length > 0 && (
+    <section class="py-20 bg-neutral-50">
+      <Container>
+        <AnimatedSection client:load>
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-neutral-900 mb-4">Our Services</h2>
+            <p class="text-xl text-neutral-600 max-w-2xl mx-auto">
+              Discover how we can help transform your business with our professional services
+            </p>
+          </div>
+        </AnimatedSection>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredServices.map((service: any, index: number) => (
+            <AnimatedSection client:load delay={index * 0.1}>
+              <ServiceCard
+                title={service.title}
+                description={service.description}
+                slug={service.slug}
+                image={service.image}
+                icon={service.icon}
+              />
+            </AnimatedSection>
+          ))}
+        </div>
+
+        <div class="text-center mt-12">
+          <Button href="/services" variant="outline">
+            View All Services
+          </Button>
+        </div>
+      </Container>
+    </section>
+  )}
+
+  <!-- Testimonials Section -->
+  {testimonials && testimonials.length > 0 && (
+    <section class="py-20 bg-white">
+      <Container>
+        <AnimatedSection client:load>
+          <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-neutral-900 mb-4">What Our Clients Say</h2>
+            <p class="text-xl text-neutral-600 max-w-2xl mx-auto">
+              Don't just take our word for it - hear from our satisfied clients
+            </p>
+          </div>
+        </AnimatedSection>
+
+        <AnimatedSection client:load delay={0.2}>
+          <TestimonialCarousel client:load testimonials={testimonials} />
+        </AnimatedSection>
+      </Container>
+    </section>
+  )}
+
+  <!-- Final CTA Section -->
+  <section class="py-20 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 text-white">
+    <Container>
+      <AnimatedSection client:load>
+        <div class="text-center max-w-3xl mx-auto">
+          <h2 class="text-4xl font-bold mb-6">Ready to Get Started?</h2>
+          <p class="text-xl mb-8 text-primary-100">
+            Let's work together to bring your vision to life. Contact us today for a free consultation.
+          </p>
+          <Button href="/contact" variant="secondary">
+            Get in Touch
+          </Button>
+        </div>
+      </AnimatedSection>
+    </Container>
+  </section>
+
+  <Footer />
 </Layout>
