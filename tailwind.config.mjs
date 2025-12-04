@@ -1,9 +1,3 @@
-import react from '@astrojs/react';
-import tailwind from '@astrojs/tailwind';
-import vercel from '@astrojs/vercel';
-import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'astro/config';
-
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
@@ -57,18 +51,5 @@ export default {
             },
         },
     },
-    plugins: [tailwindcss],
-};// https://astro.build/config
-export default defineConfig({
-    output: 'hybrid',
-
-    integrations: [tailwind(), react()],
-
-    adapter: vercel({
-        imageService: true,
-        webAnalytics: {
-            enabled: true
-        }
-    })
-});
-
+    plugins: [],
+};
