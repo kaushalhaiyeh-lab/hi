@@ -16,6 +16,7 @@
     "@sanity/vision": "^4.20.0",
     "@supabase/supabase-js": "^2.86.0",
     "astro": "^5.16.4",
+    "dotenv": "^17.2.3",
     "framer-motion": "^12.23.25",
     "sanity": "^4.20.0"
   },
