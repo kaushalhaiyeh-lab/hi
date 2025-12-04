@@ -10,7 +10,9 @@ interface Props {
 
 const { name, role, bio, image } = Astro.props;
 
-const imageUrl = urlFor(image).width(400).height(400).url();
+const imageUrl = image 
+  ? urlFor(image).width(400).height(400).url() 
+  : 'https://via.placeholder.com/400x400/3b82f6/ffffff?text=' + encodeURIComponent(name.charAt(0));
 ---
 
 <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">

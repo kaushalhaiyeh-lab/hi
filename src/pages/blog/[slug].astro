@@ -18,7 +18,9 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const imageUrl = urlFor(post.mainImage).width(1200).height(600).url();
+const imageUrl = post.mainImage 
+  ? urlFor(post.mainImage).width(1200).height(600).url()
+  : 'https://via.placeholder.com/1200x600/3b82f6/ffffff?text=Blog+Post';
 ---
 
 <Layout
