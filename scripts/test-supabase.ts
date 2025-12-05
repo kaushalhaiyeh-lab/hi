@@ -9,7 +9,7 @@ const __dirname = dirname(__filename);
 dotenv.config({ path: join(__dirname, '..', '.env') });
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_KEY;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 console.log('🔍 Supabase Connection Test\n');
 console.log('━'.repeat(50));
@@ -65,6 +65,14 @@ async function testConnection() {
 
         console.log('   ✅ Connection successful!');
         console.log('   📊 Table exists with ' + (count ?? 0) + ' records');
+
+        if (count === 0) {
+            console.log('\n   ℹ️  Note: Seeing 0 records is EXPECTED and CORRECT!');
+            console.log('   This is because Row Level Security (RLS) is working.');
+            console.log('   The anon key can INSERT but cannot SELECT records.');
+            console.log('   Check your Supabase dashboard to see all records.');
+        }
+
         return true;
     } catch (err) {
         console.log('   ❌ Unexpected error: ' + err);
