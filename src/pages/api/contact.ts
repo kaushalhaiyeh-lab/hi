@@ -59,11 +59,18 @@ export const POST: APIRoute = async ({ request }) => {
         );
     } catch (error) {
         console.error('Contact form error:', error);
+        console.error('Error details:', {
+            message: error instanceof Error ? error.message : 'Unknown error',
+            stack: error instanceof Error ? error.stack : undefined,
+            supabaseUrl: process.env.SUPABASE_URL ? 'Set' : 'Missing',
+            supabaseKey: process.env.SUPABASE_ANON_KEY ? 'Set' : 'Missing',
+        });
 
         return new Response(
             JSON.stringify({
                 success: false,
                 error: 'Failed to submit form. Please try again later.',
+                debug: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
             }),
             {
                 status: 500,
