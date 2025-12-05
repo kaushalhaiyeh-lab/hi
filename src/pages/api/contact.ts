@@ -1,6 +1,17 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 
+// GET handler to verify endpoint exists
+export const GET: APIRoute = async () => {
+    return new Response(JSON.stringify({
+        message: 'Contact form API endpoint. Use POST to submit.',
+        methods: ['POST'],
+    }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+    });
+};
+
 export const POST: APIRoute = async ({ request }) => {
     try {
         const data = await request.json();
